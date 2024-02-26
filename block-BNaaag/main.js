@@ -2,10 +2,10 @@
 
 // // ```js
 const fs = require('fs');
-fs.readFile("index.md",(err,data)=>{
+fs.readFile("index.md","utf-8",(err,data)=>{
     console.log(data.toString());
     
-})
+});
 // // Run sync code from fs module in the above file(`index.js`).ole.log(err);
 let res=fs.readFileSync("index.md");
 console.log("Synchronous version is :" +res.toString)
