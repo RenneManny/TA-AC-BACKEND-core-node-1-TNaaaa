@@ -12,13 +12,13 @@ function handleRequest(req,res) {
     
     // res.write('<h1>');
     // - handle GET request on '/file' route to read node.html using fs.readFile
-    if(req.method==='GET' && req.url==='/file'){
+    if(req.method==='GET' && req.url==='/stream'){
         res.writeHeader(200,{'content-type':'text/html'});
         fs.createReadStream('./node.html').pipe(res);
         res.send();
     }
     // - handle GET request on '/stream' route to read node.html using fs.createReadStream
-    
+
     
 }
 server.listen(5555,()=>{
