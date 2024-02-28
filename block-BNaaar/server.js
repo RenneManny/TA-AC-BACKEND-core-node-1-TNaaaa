@@ -15,23 +15,16 @@ function handleRequest(req,res){
         res.write("Welcome to homepage")
         res.end();
     }
-    else if(req.method==='POST' && req.url==='/about'){
+    else if(req.method==='GET' && req.url==='/about'){
         res.writeHead(200,{'content-type':'text/html'});
         res.write('<h2>This is all about NodeJS</h2>');
         res.end();
     }
     // 3. handle POST request on '/about' and send json response `{message: this is a post request}`.
-    else if (req.method==='POST' && req.url==='/about'){
-        let body = '';
-        req.on('data', (chunk) => {
-            body += chunk.toString();
-        });
-        req.on('end', () => {
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.write(JSON.stringify({message: "This is a post request"}));
-            res.end();
-        });
-
+    else if(req.method==='POST' && req.url==='/about'){
+        res.writeHead(200,{'content-type':'application/json'});
+        res.write('{message:this is a post request}');
+        res.end();
     }
 
 }
