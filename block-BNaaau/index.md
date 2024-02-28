@@ -1,19 +1,10 @@
 writeCode
 
-Q. Create a basic server using http's createServer
-  - listen for request on port 5000
-  - console request and response object
-  - do a request using browser on `localhost:5000`
-  - check out console for request and response object
 
-Q. create a node server 
-  - add listener on port 5100
-  - respond with 'My first server in NodeJS' using response object
 
-Q. write code to create a node server 
-  - add listener on port 5555
-  - console request headers
-  - respond with content of user-agent from request headers.
+
+
+
 
 Q. write code to create a node server 
   - add listener on port 5566
