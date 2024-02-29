@@ -1,62 +1,70 @@
-const express = require('express');
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const app = express();
-
-// Define routes for HTML templates
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+// Create a server
+const server = http.createServer((req, res) => {
+  // Routing for HTML templates
+  if (req.url === '/' || req.url === '/index.html') {
+    serveHTML('index.html', res);
+  } else if (req.url === '/about' || req.url === '/about.html') {
+    serveHTML('about.html', res);
+  }
+  
+  // Routing for CSS files
+  else if (req.url.endsWith('.css')) {
+    serveStatic('stylesheets', 'text/css', req, res);
+  }
+  
+  // Routing for image files
+  else if (req.url.endsWith('.jpg')) {
+    serveStatic('images', 'image/jpeg', req, res);
+  }
+  
+  // Routing for JavaScript files
+  else if (req.url.endsWith('.js')) {
+    serveStatic('js', 'text/javascript', req, res);
+  }
+  
+  // Handle 404 - Not Found
+  else {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('404 - Not Found');
+  }
 });
 
-app.get('/about', (req, res) => {
-  res.sendFile(path.join(__dirname, 'about.html'));
-});
-
-// Define route for CSS files
-app.get('/*.css', (req, res) => {
-  res.setHeader('Content-Type', 'text/css');
-  const cssPath = path.join(__dirname, 'assets', 'stylesheets', req.url);
-  fs.readFile(cssPath, (err, content) => {
+// Function to serve HTML files
+function serveHTML(filename, res) {
+  const filePath = path.join(__dirname, filename);
+  fs.readFile(filePath, (err, content) => {
     if (err) {
       console.log(err);
-      res.status(404).send('CSS file not found');
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('500 - Internal Server Error');
     } else {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(content, 'utf-8');
+    }
+  });
+}
+
+// Function to serve static files (CSS, images, JavaScript)
+function serveStatic(folder, contentType, req, res) {
+  const filePath = path.join(__dirname, 'assets', folder, req.url);
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      console.log(err);
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('404 - Not Found');
+    } else {
+      res.writeHead(200, { 'Content-Type': contentType });
       res.end(content);
     }
   });
-});
-
-// Define route for image files
-app.get('/*.jpg', (req, res) => {
-  const imgPath = path.join(__dirname, 'assets', 'images', req.url);
-  fs.readFile(imgPath, (err, content) => {
-    if (err) {
-      console.log(err);
-      res.status(404).send('Image not found');
-    } else {
-      res.setHeader('Content-Type', 'image/jpeg');
-      res.end(content);
-    }
-  });
-});
-
-// Define route for JavaScript files
-app.get('/*.js', (req, res) => {
-  res.setHeader('Content-Type', 'text/javascript');
-  const jsPath = path.join(__dirname, 'assets', 'js', req.url);
-  fs.readFile(jsPath, (err, content) => {
-    if (err) {
-      console.log(err);
-      res.status(404).send('JavaScript file not found');
-    } else {
-      res.end(content);
-    }
-  });
-});
+}
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
